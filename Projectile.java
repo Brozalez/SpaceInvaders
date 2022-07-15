@@ -64,7 +64,4 @@ public class Projectile{
 		this.radius = radius;
 	}
 
-	public atualiza(){
-		System.out.println("oi");
-	}
 }
