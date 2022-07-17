@@ -125,6 +125,18 @@ public class Main {
 		double enemy2_radius = 12.0;						// raio (tamanho aproximado do inimigo 2)
 		long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer
 		
+		/* variaveis do powerup */
+		
+		int [] powerup_states = new int[10];					// estados
+		double [] powerup_X = new double[10];					// coordenadas x
+		double [] powerup_Y = new double[10];					// coordenadas y
+		double [] powerup_V = new double[10];					// velocidades
+		double [] powerup_angle = new double[10];				// Ã¢ngulos (indicam direÃ§Ã£o do movimento)
+		double [] powerup_RV = new double[10];					// velocidades de rotaÃ§Ã£o
+		double powerup_radius = 5.0;						// raio (tamanho do inimigo 1)
+		long nextpowerup = currentTime + 20000;					// instante em que um novo inimigo 1 deve aparecer
+
+
 		/* variÃ¡veis dos projÃ©teis lanÃ§ados pelos inimigos (tanto tipo 1, quanto tipo 2) */
 		
 		int [] e_projectile_states = new int[200];				// estados
@@ -147,6 +159,7 @@ public class Main {
 		for(int i = 0; i < e_projectile_states.length; i++) e_projectile_states[i] = INACTIVE;
 		for(int i = 0; i < enemy1_states.length; i++) enemy1_states[i] = INACTIVE;
 		for(int i = 0; i < enemy2_states.length; i++) enemy2_states[i] = INACTIVE;
+		for(int i = 0; i < powerup_states.length; i++) powerup_states[i] = INACTIVE;
 		
 		// Iniciando primeiro plano
 		primaryBackground.startBackground();
@@ -246,6 +259,32 @@ public class Main {
 						player.setExplosionEnd(currentTime + 2000);
 					}
 				}
+
+				/* colisoes player - powerup */
+
+				for(int i = 0; i < powerup_states.length; i++){
+					
+					double dx = powerup_X[i] - player.getX();
+					double dy = powerup_Y[i] - player.getY();
+					double dist = Math.sqrt(dx * dx + dy * dy);
+					
+					if(dist < (player.getRadius() + powerup_radius) * 0.8){
+						player.setState(ACTIVE);
+						powerup_states[i] = INACTIVE;
+						// player.setState(ACTIVE);
+						for (int q = 0; q < 10; q = q + 1){
+							enemy1_states[q] = EXPLODING;
+							enemy1_explosion_start[q] = currentTime;
+							enemy1_explosion_end[q] = currentTime + 500;
+							enemy2_states[q] = EXPLODING;
+							enemy2_explosion_start[q] = currentTime;
+							enemy2_explosion_end[q] = currentTime + 500;
+	
+						}
+					}
+				}
+
+
 			}
 			
 			/* colisÃµes projeteis (player) - inimigos */
@@ -449,6 +488,28 @@ public class Main {
 					}
 				}
 			}
+
+			//Powerup
+
+			for(int i = 0; i < powerup_states.length; i++){
+				
+				if(powerup_states[i] == ACTIVE){
+					
+					/* verificando se inimigo saiu da tela */
+					if(powerup_Y[i] > GameLib.HEIGHT + 10) {
+						
+						powerup_states[i] = INACTIVE;
+					}
+					else {
+					
+						powerup_X[i] += powerup_V[i] * Math.cos(powerup_angle[i]) * delta;
+						powerup_Y[i] += powerup_V[i] * Math.sin(powerup_angle[i]) * delta * (-1.0);
+						powerup_angle[i] += powerup_RV[i] * delta;
+						
+					}
+				}
+			}
+
 			
 			/* verificando se novos inimigos (tipo 1) devem ser "lanÃ§ados" */
 			
@@ -498,6 +559,25 @@ public class Main {
 					}
 				}
 			}
+
+			/* verificando se novos Powerups devem ser "lanÃ§ados" */
+			
+			if(currentTime > nextpowerup){
+				
+				int free = findFreeIndex(powerup_states);
+											
+				if(free < powerup_states.length){
+								
+					powerup_X[free] = Math.random() * (GameLib.WIDTH - 20.0) + 10.0;
+					powerup_Y[free] = -10.0;
+					powerup_V[free] = 0.20 + Math.random() * 0.15;
+					powerup_angle[free] = (3 * Math.PI) / 2;
+					powerup_RV[free] = 0.0;
+					powerup_states[free] = ACTIVE;
+					nextpowerup = currentTime + 50000;
+				}
+			}
+			
 			
 			/* Verificando se a explosÃ£o do player jÃ¡ acabou.         */
 			/* Ao final da explosÃ£o, o player volta a ser controlÃ¡vel */
@@ -629,6 +709,18 @@ public class Main {
 					GameLib.drawDiamond(enemy2_X[i], enemy2_Y[i], enemy2_radius);
 				}
 			}
+			
+			/* desenhando powerup */
+			
+			for(int i = 0; i < powerup_states.length; i++){
+								
+				if(powerup_states[i] == ACTIVE){
+			
+					GameLib.setColor(Color.PINK);
+					GameLib.drawCircle(powerup_X[i], powerup_Y[i], powerup_radius);
+				}
+            }
+
 			
 			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
 			
