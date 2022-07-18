@@ -596,10 +596,10 @@ public class Main {
 			
 			if(player.getState() == ACTIVE){
 				
-				if(GameLib.iskeyPressed(GameLib.KEY_UP)) player.setY(player.getY() - (delta * player.getVY())); 
-				if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) player.setY(player.getY() + (delta * player.getVX())); 
-				if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) player.setX(player.getX() - (delta * player.getVX())); 
-				if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) player.setX(player.getX() + (delta * player.getVY())); 
+				if(GameLib.iskeyPressed(GameLib.KEY_UP)) player.moverCima(delta); 
+				if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) player.moverBaixo(delta);
+				if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) player.moverEsquerda(delta);
+				if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) player.moverDireita(delta);
 				
 				if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
 					
