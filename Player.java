@@ -1,3 +1,4 @@
+import java.awt.Color;
 
 
 public class Player {
@@ -10,6 +11,8 @@ public class Player {
 	private double explosion_start;
 	private double explosion_end;
 	private long nextShot;
+	
+	private static final int EXPLODING = 2;
 
 	
 	
@@ -24,6 +27,26 @@ public class Player {
 		this.setExplosionStart(explosion_start);
 		this.setExplosionEnd(explosion_end);
 		this.setNextShot(nextShot);
+	}
+	
+	public void verificaPosicao() {
+		if(this.getX() < 0.0) this.setX(0.0);
+		if(this.getX() >= GameLib.WIDTH) this.setX(GameLib.WIDTH - 1);
+		if(this.getY() < 25.0) this.setY(25.0);
+		if(this.getY() >= GameLib.HEIGHT) this.setY(GameLib.HEIGHT -1);
+	}
+	
+	public void desenhaPlayer(long currentTime) {
+		if(this.getState() == EXPLODING){
+			
+			double alpha = (currentTime - this.getExpStart()) / (this.getExpEnd() - this.getExpStart());
+			GameLib.drawExplosion(this.getX(), this.getY(), alpha);
+		}
+		else{
+			
+			GameLib.setColor(Color.BLUE);
+			GameLib.drawPlayer(this.getX(), this.getY(), this.getRadius());
+		}
 	}
 	
 	public void setState(int p) {
