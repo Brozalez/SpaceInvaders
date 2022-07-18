@@ -1,3 +1,4 @@
+package Principal;
 /*
  *	Classe para definir o plano de fundo do jogo (as estrelas).
  *	Esta classe será utilizada para construir o plano primário e secundário do jogo.

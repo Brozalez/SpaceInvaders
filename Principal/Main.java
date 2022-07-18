@@ -1,3 +1,4 @@
+package Principal;
 import java.awt.Color;
 
 /***********************************************************************/
@@ -624,10 +625,7 @@ public class Main {
 			/* Verificando se coordenadas do player ainda estÃƒÂ£o dentro */
 			/* da tela de jogo apÃƒÂ³s processar entrada do usuÃƒÂ¡rio.      */
 			
-			if(player.getX() < 0.0) player.setX(0.0);
-			if(player.getX() >= GameLib.WIDTH) player.setX(GameLib.WIDTH - 1);
-			if(player.getY() < 25.0) player.setY(25.0);
-			if(player.getY() >= GameLib.HEIGHT) player.setY(GameLib.HEIGHT -1);
+			player.verificaPosicao(); //funções que checam a posição para o player nãoo sair da tela foram para a classe player
 
 			/*******************/
 			/* Desenho da cena */
@@ -641,16 +639,7 @@ public class Main {
 						
 			/* desenhando player */
 			
-			if(player.getState() == EXPLODING){
-				
-				double alpha = (currentTime - player.getExpStart()) / (player.getExpEnd() - player.getExpStart());
-				GameLib.drawExplosion(player.getX(), player.getY(), alpha);
-			}
-			else{
-				
-				GameLib.setColor(Color.BLUE);
-				GameLib.drawPlayer(player.getX(), player.getY(), player.getRadius());
-			}
+			player.desenhaPlayer(currentTime);
 				
 			/* deenhando projeteis (player) */
 			
