@@ -2,7 +2,7 @@ package Principal;
 import java.awt.Color;
 
 
-public class Player {
+public class Player implements Keyboard{
 	private int state;
 	private double X; 
 	private double Y; 
@@ -120,6 +120,36 @@ public class Player {
 	
 	public long getNextShot() {
 		return this.nextShot;
+	}
+
+	@Override
+	public void moverCima(long delta) {
+		this.setY(this.getY() - (delta * this.getVY()));
+		
+	}
+
+	@Override
+	public void moverBaixo(long delta) {
+		this.setY(this.getY() + (delta * this.getVX()));
+		
+	}
+
+	@Override
+	public void moverDireita(long delta) {
+		this.setX(this.getX() + (delta * this.getVY()));
+		
+	}
+
+	@Override
+	public void moverEsquerda(long delta) {
+		this.setX(this.getX() - (delta * this.getVX()));
+		
+	}
+
+	@Override
+	public void atirar(long delta) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
