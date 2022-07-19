@@ -403,9 +403,8 @@ public static int findFreeIndex(int [] stateArray){
 				for(int i = 0; i < enemy3_states.length; i++){
 					
 					if(enemy3_states[i] == ACTIVE){
-						
-						double dx = enemy3_X[i] - projectile_X[k];
-						double dy = enemy3_Y[i] - projectile_Y[k];
+						double dx = enemy3_X[i] - projectile.get(k).getX();
+						double dy = enemy3_Y[i] - projectile.get(k).getY();
 						double dist = Math.sqrt(dx * dx + dy * dy);
 						
 						if(dist < enemy3_radius){
@@ -611,15 +610,15 @@ public static int findFreeIndex(int [] stateArray){
 						
 						if(currentTime > enemy3_nextShoot[i] && enemy3_Y[i] < player.getY()){
 																							
-							int free = findFreeIndex(e_projectile_states);
+							int free = findFreeIndexEProjectile(e_projectile);
 							
-							if(free < e_projectile_states.length){
+							if(free < E_PROJECTILE_NUMBER){
 								
-								e_projectile_X[free] = enemy3_X[i];
-								e_projectile_Y[free] = enemy3_Y[i];
-								e_projectile_VX[free] = Math.cos(enemy3_angle[i]) * 0.45;
-								e_projectile_VY[free] = Math.sin(enemy3_angle[i]) * 0.45 * (-1.0);
-								e_projectile_states[free] = ACTIVE;
+								e_projectile.get(free).setX(enemy3_X[i]);
+								e_projectile.get(free).setY(enemy3_Y[i]);
+								e_projectile.get(free).setVX(Math.cos(enemy3_angle[i]) * 0.45);
+								e_projectile.get(free).setVY(Math.sin(enemy3_angle[i]) * 0.45 * (-1.0));
+								e_projectile.get(free).setState(ACTIVE);
 								
 								enemy3_nextShoot[i] = (long) (currentTime + 200);
 							}
