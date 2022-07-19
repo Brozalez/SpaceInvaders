@@ -13,7 +13,6 @@ public class Player implements Keyboard{
 	private double explosion_end;
 	private long nextShot;
 	
-	private static final int EXPLODING = 2;
 
 	
 	
@@ -38,7 +37,7 @@ public class Player implements Keyboard{
 	}
 	
 	public void desenhaPlayer(long currentTime) {
-		if(this.getState() == EXPLODING){
+		if(this.getState() == Main.EXPLODING){
 			
 			double alpha = (currentTime - this.getExpStart()) / (this.getExpEnd() - this.getExpStart());
 			GameLib.drawExplosion(this.getX(), this.getY(), alpha);
@@ -49,6 +48,8 @@ public class Player implements Keyboard{
 			GameLib.drawPlayer(this.getX(), this.getY(), this.getRadius());
 		}
 	}
+	
+	
 	
 	public void setState(int p) {
 		this.state = p;
