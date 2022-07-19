@@ -2,7 +2,7 @@ package Principal;
 import java.awt.Color;
 
 
-public class Player implements Keyboard{
+public class Player implements Principal.Keyboard {
 	private int state;
 	private double X; 
 	private double Y; 
@@ -12,6 +12,7 @@ public class Player implements Keyboard{
 	private double explosion_start;
 	private double explosion_end;
 	private long nextShot;
+
 	
 	private static final int EXPLODING = 2;
 
@@ -32,21 +33,21 @@ public class Player implements Keyboard{
 	
 	public void verificaPosicao() {
 		if(this.getX() < 0.0) this.setX(0.0);
-		if(this.getX() >= GameLib.WIDTH) this.setX(GameLib.WIDTH - 1);
+		if(this.getX() >= Principal.GameLib.WIDTH) this.setX(Principal.GameLib.WIDTH - 1);
 		if(this.getY() < 25.0) this.setY(25.0);
-		if(this.getY() >= GameLib.HEIGHT) this.setY(GameLib.HEIGHT -1);
+		if(this.getY() >= Principal.GameLib.HEIGHT) this.setY(Principal.GameLib.HEIGHT -1);
 	}
 	
 	public void desenhaPlayer(long currentTime) {
 		if(this.getState() == EXPLODING){
 			
 			double alpha = (currentTime - this.getExpStart()) / (this.getExpEnd() - this.getExpStart());
-			GameLib.drawExplosion(this.getX(), this.getY(), alpha);
+			Principal.GameLib.drawExplosion(this.getX(), this.getY(), alpha);
 		}
 		else{
 			
-			GameLib.setColor(Color.BLUE);
-			GameLib.drawPlayer(this.getX(), this.getY(), this.getRadius());
+			Principal.GameLib.setColor(Color.BLUE);
+			Principal.GameLib.drawPlayer(this.getX(), this.getY(), this.getRadius());
 		}
 	}
 	
