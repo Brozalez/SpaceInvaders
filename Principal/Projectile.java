@@ -16,6 +16,16 @@ public class Projectile{
 		this.setRadius(radius);
 		
 	}
+	
+	public Projectile(int state, double X, double Y, double VX, double VY) {
+		this.setState(state);
+		this.setX(X);
+		this.setY(Y);
+		this.setVX(VX);
+		this.setVY(VY);
+		
+		
+	}
 
 	public int getState() {
 		return state;
