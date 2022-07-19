@@ -311,7 +311,9 @@ public class Main {
 							enemy2_states[q] = EXPLODING;
 							enemy2_explosion_start[q] = currentTime;
 							enemy2_explosion_end[q] = currentTime + 500;
-	
+							enemy3_states[q] = EXPLODING;
+							enemy3_explosion_start[q] = currentTime;
+							enemy3_explosion_end[q] = currentTime + 500;
 						}
 					}
 				}
