@@ -10,6 +10,20 @@ public class Enemy {
     private double explosion_start;
     private double explosion_end;
     private long nextShot;
+    private long nextEnemy;
+    
+    public Enemy(int state, double x, double y, double v, double angle, double RV, long nextShot, double radius, long nextEnemy) {
+        this.state = state;
+        this.explosion_start = 0;
+        this.explosion_end = 0;
+        X = x;
+        Y = y;
+        V = v;
+        this.angle = angle;
+        this.RV = RV;
+        this.radius = radius;
+        this.nextEnemy = nextEnemy;
+    }
 
     public int getState() {
         return state;
@@ -90,17 +104,14 @@ public class Enemy {
     public void setNextShot(long nextShot) {
         this.nextShot = nextShot;
     }
-
-    public Enemy(int state, double x, double y, double v, double angle, double RV, double radius, double explosion_start, double explosion_end, long nextShot) {
-        this.state = state;
-        X = x;
-        Y = y;
-        V = v;
-        this.angle = angle;
-        this.RV = RV;
-        this.radius = radius;
-        this.explosion_start = explosion_start;
-        this.explosion_end = explosion_end;
-        this.nextShot = nextShot;
+    
+    public long getNextEnemy() {
+        return nextEnemy;
     }
+
+    public void setNextEnemy(long nextEnemy) {
+        this.nextEnemy = nextEnemy;
+    }
+
+    
 }

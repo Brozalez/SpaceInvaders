@@ -7,7 +7,7 @@ public class Projectile{
 	private double VY;
 	private double radius;
 	
-	public Projectile(int state, double X, double Y, double VX, double VY, double radius) {
+	/*public Projectile(int state, double X, double Y, double VX, double VY, double radius) {
 		this.setState(state);
 		this.setX(X);
 		this.setY(Y);
@@ -15,7 +15,7 @@ public class Projectile{
 		this.setVY(VY);
 		this.setRadius(radius);
 		
-	}
+	}*/
 	
 	public Projectile(int state, double X, double Y, double VX, double VY) {
 		this.setState(state);
