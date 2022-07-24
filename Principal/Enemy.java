@@ -9,7 +9,45 @@ public class Enemy {
     private double radius;
     private double explosion_start;
     private double explosion_end;
+    private double enemy2Count;
+    private double enemy2SpawnX;
     private long nextShot;
+    private long nextEnemy;
+    private int count;
+    
+    public Enemy(int state, double x, double y, double v, double angle, double RV, long nextShot, double radius, long nextEnemy) {
+        this.state = state;
+        this.explosion_start = 0;
+        this.explosion_end = 0;
+        X = x;
+        Y = y;
+        V = v;
+        this.angle = angle;
+        this.RV = RV;
+        this.radius = radius;
+        this.nextEnemy = nextEnemy;
+    }
+    public Enemy(int state, double x, double y, double v, double angle, double RV, long nextShot, double radius, long nextEnemy, double enemy2SpawnX, int count) {
+        this.state = state;
+        this.explosion_start = 0;
+        this.explosion_end = 0;
+        this.enemy2SpawnX = GameLib.WIDTH * 0.20;
+        this.X = x;
+        this.Y = y;
+        this.V = v;
+        this.angle = angle;
+        this.RV = RV;
+        this.radius = radius;
+        this.nextEnemy = nextEnemy;
+        this.count = count;
+    }
+    public double getenemy2SpawnX() {
+        return enemy2Count;
+    }
+    public void setenemy2SpawnX(double enemy2SpawnX) {
+        this.enemy2SpawnX = enemy2SpawnX;
+    }
+
 
     public int getState() {
         return state;
@@ -24,7 +62,7 @@ public class Enemy {
     }
 
     public void setX(double x) {
-        X = x;
+        this.X = x;
     }
 
     public double getY() {
@@ -32,7 +70,7 @@ public class Enemy {
     }
 
     public void setY(double y) {
-        Y = y;
+        this.Y = y;
     }
 
     public double getV() {
@@ -40,7 +78,7 @@ public class Enemy {
     }
 
     public void setV(double v) {
-        V = v;
+        this.V = v;
     }
 
     public double getAngle() {
@@ -60,7 +98,7 @@ public class Enemy {
     }
 
     public double getRadius() {
-        return radius;
+        return this.radius;
     }
 
     public void setRadius(double radius) {
@@ -90,17 +128,23 @@ public class Enemy {
     public void setNextShot(long nextShot) {
         this.nextShot = nextShot;
     }
-
-    public Enemy(int state, double x, double y, double v, double angle, double RV, double radius, double explosion_start, double explosion_end, long nextShot) {
-        this.state = state;
-        X = x;
-        Y = y;
-        V = v;
-        this.angle = angle;
-        this.RV = RV;
-        this.radius = radius;
-        this.explosion_start = explosion_start;
-        this.explosion_end = explosion_end;
-        this.nextShot = nextShot;
+    
+    public long getNextEnemy() {
+        return nextEnemy;
     }
+
+    public void setNextEnemy(long nextEnemy) {
+        this.nextEnemy = nextEnemy;
+    }
+    
+    public void setCount(int count) {
+    	this.count = count;
+    }
+    
+    public int getCount() {
+    	return this.count;
+    }
+    
+
+    
 }
