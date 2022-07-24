@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /*                                                                     */
 /* Para jogar:                                                         */
 /*                                                                     */
-/*    - cima, baixo, esquerda, direita: movimentaÃ§Ã£o do player.        */
+/*    - cima, baixo, esquerda, direita: movimento do player.        */
 /*    - control: disparo de projeteis.                                 */
 /*    - ESC: para sair do jogo.                                        */
 /*                                                                     */
@@ -24,6 +24,8 @@ public class Main {
 	public static final int E_PROJECTILE_NUMBER = 200; 
 	public static final int ENEMY_NUMBER = 10;
 	public static long conta = 0;
+	public static long conta3 = 0;
+	public static long contapowerup = 0;
 	public static int id = 0;
 	
 	
@@ -99,11 +101,11 @@ public static int findFreeIndex(int [] stateArray){
 		return freeArray;
 	}
 	
-	/* MÃ©todo principal */
+	/* Metodo principal */
 	
 	public static void main(String [] args){
 
-		/* Indica que o jogo estÃ¡ em execuÃ§Ã£o */
+		/* Indica que o jogo esta em execuÃ§Ã£o */
 
 		boolean running = true;
 
@@ -134,12 +136,8 @@ public static int findFreeIndex(int [] stateArray){
         for(int i = 0; i< PROJECTILE_NUMBER;i++) projectile.add(new Projectile(0,0.0,0.0,0.0,0.0));
         
         Enemy[] enemy1 = new Enemy[ENEMY_NUMBER];
-		double enemy1_radius = 9.0;						// raio (tamanho do inimigo 1)
         Enemy[] enemy3 = new Enemy[ENEMY_NUMBER];
-		double enemy3_radius = 10.0;						// raio (tamanho do inimigo 3)
         Enemy[] powerup = new Enemy[ENEMY_NUMBER];
-		double powerup_radius = 5.0;						// raio (tamanho do Powerup)
-
 
 		//Enemy[] enemy2 = new Enemy[ENEMY_NUMBER];
 		
@@ -176,13 +174,13 @@ public static int findFreeIndex(int [] stateArray){
 
 		/* variaveis do powerup */
 		
-		int [] powerup_states = new int[10];					// estados
-		double [] powerup_X = new double[10];					// coordenadas x
-		double [] powerup_Y = new double[10];					// coordenadas y
-		double [] powerup_V = new double[10];					// velocidades
-		double [] powerup_angle = new double[10];				// Angulos (indicam direcao do movimento)
-		double [] powerup_RV = new double[10];					// velocidades de rotacao
-		long nextpowerup = currentTime + 20000;					// instante em que um novo inimigo 1 deve aparecer
+		// int [] powerup = new int[10];					// estados
+		// double [] powerup_X = new double[10];					// coordenadas x
+		// double [] powerup_Y = new double[10];					// coordenadas y
+		// double [] powerup_V = new double[10];					// velocidades
+		// double [] powerup_angle = new double[10];				// Angulos (indicam direcao do movimento)
+		// double [] powerup_RV = new double[10];					// velocidades de rotacao
+		// long nextpowerup = currentTime + 20000;					// instante em que um novo inimigo 1 deve aparecer
 
 		/* variaveis dos projeteis lancados pelos inimigos (tanto tipo 1, quanto tipo 2) */
 		
@@ -203,18 +201,19 @@ public static int findFreeIndex(int [] stateArray){
 		/* inicializacoes */
 		for(int i = 0; i < PROJECTILE_NUMBER; i++) projectile.get(i).setState(INACTIVE);
 		for(int i = 0; i < E_PROJECTILE_NUMBER; i++) e_projectile.get(i).setState(INACTIVE);
-		for (int i = 0; i < ENEMY_NUMBER; i++) {
+		for (int i = 0; i < enemy1.length; i++) {
 			enemy1[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 9, currentTime + 2000*i);
 		}
 		for(int i = 0; i < enemy2_states.length; i++) enemy2_states[i] = INACTIVE;
-		for (int i = 0; i < ENEMY_NUMBER; i++) {
+		for (int i = 0; i < enemy3.length; i++)
+		{
 			enemy3[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 10, currentTime + 1000*i);
 		}
-		for (int i = 0; i < ENEMY_NUMBER; i++) {
+		for (int i = 0; i < powerup.length; i++) {
 			powerup[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
-					0, currentTime + 500, 5, currentTime + 2000*i);
+					0, currentTime + 500, 5, currentTime + 15000*i);
 		}
 
 
@@ -227,7 +226,7 @@ public static int findFreeIndex(int [] stateArray){
 		/* iniciado interface grÃ¡fica */
 		
 		GameLib.initGraphics();
-		//GameLib.initGraphics_SAFE_MODE();  // chame esta versÃ£o do mÃ©todo caso nada seja desenhado na janela do jogo.
+		//GameLib.initGraphics_SAFE_MODE();  // chame esta versÃ£o do Metodo caso nada seja desenhado na janela do jogo.
 		
 		/*************************************************************************************************/
 		/*                                                                                               */
@@ -236,12 +235,12 @@ public static int findFreeIndex(int [] stateArray){
 		/*                                                                                               */
 		/* O main loop do jogo executa as seguintes operaÃ§Ãµes:                                           */
 		/*                                                                                               */
-		/* 1) Verifica se hÃ¡ colisoes e atualiza estados dos elementos conforme a necessidade.           */
+		/* 1) Verifica se ha colisoes e atualiza estados dos elementos conforme a necessidade.           */
 		/*                                                                                               */
 		/* 2) Atualiza estados dos elementos baseados no tempo que correu entre a Ãºltima atualizaÃ§Ã£o     */
 		/*    e o timestamp atual: posiÃ§Ã£o e orientaÃ§Ã£o, execuÃ§Ã£o de disparos de projeteis, etc.         */
 		/*                                                                                               */
-		/* 3) Processa entrada do usuÃ¡rio (teclado) e atualiza estados do player conforme a necessidade. */
+		/* 3) Processa entrada do usuario (teclado) e atualiza estados do player conforme a necessidade. */
 		/*                                                                                               */
 		/* 4) Desenha a cena, a partir dos estados dos elementos.                                        */
 		/*                                                                                               */
@@ -290,13 +289,13 @@ public static int findFreeIndex(int [] stateArray){
 			
 				/* colisoes player - inimigos */
 							
-				for(int i = 0; i < ENEMY_NUMBER; i++){
+				for(int i = 0; i < enemy1.length; i++){
 					
 					double dx = enemy1[i].getX() - player.getX();//ok
 					double dy = enemy1[i].getY() - player.getY();//ok
 					double dist = Math.sqrt(dx * dx + dy * dy);
 					
-					if(dist < (player.getRadius() + enemy1_radius) * 0.8){
+					if(dist < (player.getRadius() + enemy1[i].getRadius()) * 0.8){
 						
 						player.setState(EXPLODING);
 						player.setExplosionStart(currentTime);
@@ -318,13 +317,13 @@ public static int findFreeIndex(int [] stateArray){
 					}
 				}
 
-				for(int i = 0; i < ENEMY_NUMBER; i++){
+				for(int i = 0; i < enemy3.length; i++){
 					
 					double dx = enemy3[i].getX() - player.getX();
 					double dy = enemy3[i].getY() - player.getY();
 					double dist = Math.sqrt(dx * dx + dy * dy);
 					
-					if(dist < (player.getRadius() + enemy3_radius) * 0.8){
+					if(dist < (player.getRadius() + enemy3[i].getRadius()) * 0.8){
 						
 						player.setState(EXPLODING);
 						player.setExplosionStart(currentTime);
@@ -336,29 +335,26 @@ public static int findFreeIndex(int [] stateArray){
 
 				/* colisoes player - powerup */
 
-				for(int i = 0; i < powerup_states.length; i++){
+				for(int i = 0; i < powerup.length; i++){
 					
-					double dx = powerup_X[i] - player.getX();
-					double dy = powerup_Y[i] - player.getY();
+					double dx = powerup[i].getX() - player.getX();
+					double dy = powerup[i].getY() - player.getY();
 					double dist = Math.sqrt(dx * dx + dy * dy);
 					
-					if(dist < (player.getRadius() + powerup_radius) * 0.8){
+					if(dist < (player.getRadius() + powerup[i].getRadius()) * 0.8){
 						player.setState(ACTIVE);
-						powerup_states[i] = INACTIVE;
+						powerup[i].setState(INACTIVE);
 						// player.setState(ACTIVE);
 						for (int q = 0; q < 10; q = q + 1){
-							enemy1[i].setState(EXPLODING);
-							enemy1[i].setExplosion_start(currentTime);
-							enemy1[i].setExplosion_end(currentTime + 500);
-							// enemy2[i].setState(EXPLODING);
-							// enemy2[i].setExplosion_start(currentTime);
-							// enemy2[i].setExplosion_end(currentTime + 500);
-							enemy2_states[i] = EXPLODING;
-							enemy2_explosion_start[i] = currentTime;
-							enemy2_explosion_end[i] = currentTime + 500;
-							enemy3[i].setState(EXPLODING);
-							enemy3[i].setExplosion_start(currentTime);
-							enemy3[i].setExplosion_end(currentTime + 500);
+							enemy1[q].setState(EXPLODING);
+							enemy1[q].setExplosion_start(currentTime);
+							enemy1[q].setExplosion_end(currentTime + 500);
+							enemy2[q].setState(EXPLODING);
+							enemy2[q].setExplosion_start(currentTime);
+							enemy2[q].setExplosion_end(currentTime + 500);
+							enemy3[q].setState(EXPLODING);
+							enemy3[q].setExplosion_start(currentTime);
+							enemy3[q].setExplosion_end(currentTime + 500);
 						}
 					}
 				}
@@ -369,7 +365,7 @@ public static int findFreeIndex(int [] stateArray){
 			
 			for(int k = 0; k < PROJECTILE_NUMBER; k++){
 				
-				for(int i = 0; i < ENEMY_NUMBER; i++){
+				for(int i = 0; i < enemy1.length; i++){
 										
 					if(enemy1[i].getState() == ACTIVE){
 					
@@ -377,7 +373,7 @@ public static int findFreeIndex(int [] stateArray){
 						double dy = enemy1[i].getY() - projectile.get(k).getY();
 						double dist = Math.sqrt(dx * dx + dy * dy);
 						
-						if(dist < enemy1_radius){
+						if(dist < enemy1[i].getRadius()){
 							
 							
 							enemy1[i].setState(EXPLODING);//ok
@@ -403,7 +399,7 @@ public static int findFreeIndex(int [] stateArray){
 					}
 				}
 
-				for(int i = 0; i < ENEMY_NUMBER; i++){
+				for(int i = 0; i < enemy3.length; i++){
 					
 					if(enemy3[i].getState() == ACTIVE){
 
@@ -411,7 +407,7 @@ public static int findFreeIndex(int [] stateArray){
 						double dy = enemy3[i].getY() - projectile.get(k).getY();
 						double dist = Math.sqrt(dx * dx + dy * dy);
 						
-						if(dist < enemy3_radius){
+						if(dist < enemy3[i].getRadius()){
 							
 							
 							enemy3[i].setState(EXPLODING);//ok
@@ -470,13 +466,13 @@ public static int findFreeIndex(int [] stateArray){
 			
 			/* inimigos tipo 1 */
 			
-			for(int i = 0; i < ENEMY_NUMBER; i++){
+			for(int i = 0; i < enemy1.length; i++){
 				
 				if(enemy1[i].getState() == EXPLODING){
 					
 					if(currentTime > enemy1[i].getExplosion_end()){
 						
-						//inimigo continua inativo, mas retorna pra posi��o inicial, que � aleatoria em x
+						//inimigo continua inativo, mas retorna pra posicao inicial, que � aleatoria em x
 						enemy1[i].setState(INACTIVE);//ok
 						enemy1[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
 						enemy1[i].setY(-10);
@@ -488,7 +484,7 @@ public static int findFreeIndex(int [] stateArray){
 					/* verificando se inimigo saiu da tela */
 					if(enemy1[i].getY() > GameLib.HEIGHT + 10) {
 						
-						//inimigo continua inativo, mas retorna pra posi��o inicial, que � aleatoria em x
+						//inimigo continua inativo, mas retorna pra posicao inicial, que � aleatoria em x
 						enemy1[i].setState(INACTIVE);//OK
 						enemy1[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
 						enemy1[i].setY(-10);
@@ -597,16 +593,16 @@ public static int findFreeIndex(int [] stateArray){
 
 			/* inimigos tipo 3 */
 			
-			for(int i = 0; i < ENEMY_NUMBER; i++){
+			for(int i = 0; i < enemy3.length; i++){
 				
 				if(enemy3[i].getState() == EXPLODING){
 					
 					if(currentTime > enemy3[i].getExplosion_end()){
 						
-						//inimigo continua inativo, mas retorna pra posi��o inicial, que � aleatoria em x
+						//inimigo continua inativo, mas retorna pra posicao inicial, que � aleatoria em x
 						enemy3[i].setState(INACTIVE);//ok
-						enemy3[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
-						enemy3[i].setY(-10);
+						enemy3[i].setX((GameLib.WIDTH - 20.0) + 10.0);
+						enemy3[i].setY(-5.0);
 					}
 				}
 				
@@ -615,15 +611,15 @@ public static int findFreeIndex(int [] stateArray){
 					/* verificando se inimigo saiu da tela */
 					if(enemy3[i].getY() > GameLib.HEIGHT + 10) {
 						
-						//inimigo continua inativo, mas retorna pra posi��o inicial, que � aleatoria em x
+						//inimigo continua inativo, mas retorna pra posicao inicial, que � aleatoria em x
 						enemy3[i].setState(INACTIVE);//OK
-						enemy3[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
-						enemy3[i].setY(-10);
+						enemy3[i].setX((GameLib.WIDTH - 20.0) + 10.0);
+						enemy3[i].setY(-5.0);
 					}
 					else {
 					
-						enemy3[i].setX((enemy3[i].getX() + enemy3[i].getV() -1.0) * delta);//ok
-						enemy3[i].setY(enemy3[i].getY() + enemy3[i].getV() * Math.sin(enemy3[i].getAngle()) * delta * (-0.7));//ok
+						enemy3[i].setX(enemy3[i].getX() + enemy3[i].getV() -1.2);//ok
+						enemy3[i].setY(enemy3[i].getY() + enemy3[i].getV() * Math.sin(enemy3[i].getAngle()) * delta * (-0.5));//ok
 						enemy3[i].setAngle(enemy3[i].getAngle()+ enemy3[i].getRV() * delta); //ok
 						
 						if(currentTime > enemy3[i].getNextShot() && enemy3[i].getY() < player.getY()){
@@ -647,12 +643,12 @@ public static int findFreeIndex(int [] stateArray){
 
 			//Powerup
 
-			for(int i = 0; i < powerup_states.length; i++){
+			for(int i = 0; i < powerup.length; i++){
 				
-				if(powerup_states[i] == ACTIVE){
+				if(powerup[i].getState() == ACTIVE){
 					
 					/* verificando se inimigo saiu da tela */
-					if(powerup_Y[i] > GameLib.HEIGHT + 10) {
+					if(powerup[i].getY() > GameLib.HEIGHT + 10) {
 						
 						powerup[i].setState(INACTIVE);
 						powerup[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
@@ -716,10 +712,10 @@ public static int findFreeIndex(int [] stateArray){
 
 			/* verificando se novos inimigos (tipo 3) devem ser "lancados" */
 			
-			conta += delta;
+			conta3 += delta;
 			
-			if(conta >= 1500) { //aqui define a velocidade de spawn
-				conta = 0;
+			if(conta3 >= 1500) { //aqui define a velocidade de spawn
+				conta3 = 0;
 				id++;
 				if(id>9) id=0;
 				if(enemy3[id].getState() != EXPLODING) {
@@ -730,19 +726,14 @@ public static int findFreeIndex(int [] stateArray){
 
 			/* verificando se novos Powerups devem ser "lancados" */
 			
-			if(currentTime > nextpowerup){
-				
-				int free = findFreeIndex(powerup_states);
-											
-				if(free < powerup_states.length){
-								
-					powerup_X[free] = Math.random() * (GameLib.WIDTH - 20.0) + 10.0;
-					powerup_Y[free] = -10.0;
-					powerup_V[free] = 0.20 + Math.random() * 0.15;
-					powerup_angle[free] = (3 * Math.PI) / 2;
-					powerup_RV[free] = 0.0;
-					powerup_states[free] = ACTIVE;
-					nextpowerup = currentTime + 30000;
+			contapowerup += delta;
+			
+			if(contapowerup >= 15000) { //aqui define a velocidade de spawn
+				contapowerup = 0;
+				id++;
+				if(id>9) id=0;
+				if(powerup[id].getState() != EXPLODING) {
+					powerup[id].setState(ACTIVE);
 				}
 			}
 			
@@ -758,7 +749,7 @@ public static int findFreeIndex(int [] stateArray){
 			}
 			
 			/********************************************/
-			/* Verificando entrada do usuÃ¡rio (teclado) */
+			/* Verificando entrada do usuario (teclado) */
 			/********************************************/
 			
 			if(player.getState() == ACTIVE){
@@ -790,7 +781,7 @@ public static int findFreeIndex(int [] stateArray){
 			if(GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) running = false;
 			
 			/* Verificando se coordenadas do player ainda estÃ£o dentro */
-			/* da tela de jogo apÃ³s processar entrada do usuÃ¡rio.      */
+			/* da tela de jogo apÃ³s processar entrada do usuario.      */
 			
 
 			if(player.getX() < 0.0) player.setX(0.0);
@@ -798,7 +789,7 @@ public static int findFreeIndex(int [] stateArray){
 			if(player.getY() < 25.0) player.setY(25.0);
 			if(player.getY() >= GameLib.HEIGHT) player.setY(GameLib.HEIGHT -1);
 
-			player.verificaPosicao(); //fun��es que checam a posi��o para o player n�oo sair da tela foram para a classe player
+			player.verificaPosicao(); //fun��es que checam a posicao para o player n�oo sair da tela foram para a classe player
 
 
 			/*******************/
@@ -824,7 +815,7 @@ public static int findFreeIndex(int [] stateArray){
 				GameLib.drawPlayer(player.getX(), player.getY(), player.getRadius());
 			}
 				
-			/* deenhando projeteis (player) */
+			/* desenhando projeteis (player) */
 			
 			for(int i = 0; i < PROJECTILE_NUMBER; i++){
 				
@@ -850,7 +841,7 @@ public static int findFreeIndex(int [] stateArray){
 			
 			/* desenhando inimigos (tipo 1) */
 		
-			for(int i = 0; i < ENEMY_NUMBER; i++){
+			for(int i = 0; i < enemy1.length; i++){
 				
 				if(enemy1[i].getState() == EXPLODING){
 					
@@ -862,7 +853,7 @@ public static int findFreeIndex(int [] stateArray){
 				if(enemy1[i].getState() == ACTIVE){
 			
 					GameLib.setColor(Color.CYAN);
-					GameLib.drawCircle(enemy1[i].getX(), enemy1[i].getY(), enemy1_radius);
+					GameLib.drawCircle(enemy1[i].getX(), enemy1[i].getY(), enemy1[i].getRadius());
 				}
 			}
 			
@@ -885,7 +876,7 @@ public static int findFreeIndex(int [] stateArray){
 
 			/* desenhando inimigos (tipo 3) */
 			
-			for(int i = 0; i < ENEMY_NUMBER; i++){
+			for(int i = 0; i < enemy3.length; i++){
 				
 				if(enemy3[i].getState() == EXPLODING){
 					
@@ -896,19 +887,19 @@ public static int findFreeIndex(int [] stateArray){
 				if(enemy3[i].getState() == ACTIVE){
 			
 					GameLib.setColor(Color.orange);
-					GameLib.drawTriangle(enemy3[i].getX(), enemy3[i].getY(), enemy3_radius);
+					GameLib.drawTriangle(enemy3[i].getX(), enemy3[i].getY(), enemy3[i].getRadius());
 				}
 			}
 
 
 			/* desenhando powerup */
 			
-			for(int i = 0; i < powerup_states.length; i++){
+			for(int i = 0; i < powerup.length; i++){
 								
-				if(powerup_states[i] == ACTIVE){
+				if(powerup[i].getState() == ACTIVE){
 			
 					GameLib.setColor(Color.PINK);
-					GameLib.drawCircle(powerup_X[i], powerup_Y[i], powerup_radius);
+					GameLib.drawCircle(powerup[i].getX(), powerup[i].getY(), powerup[i].getRadius());
 				}
             }
 			
