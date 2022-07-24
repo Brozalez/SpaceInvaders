@@ -121,6 +121,22 @@ public class GameLib {
 		drawLine(x3, y3, x4, y4);
 		drawLine(x4, y4, x1, y1);
 	}
+
+	public static void drawTriangle(double x, double y, double radius){
+		
+		int x1 = (int) Math.round(x);
+		int y1 = (int) Math.round(y - radius);
+		
+		int x2 = (int) Math.round(x + radius);
+		int y2 = (int) Math.round(y);
+		
+		int x3 = (int) Math.round(x - radius);
+		int y3 = (int) Math.round(y + radius);
+				
+		drawLine(x3, y3, x1, y1);
+		drawLine(x2, y2, x1, y1);
+		drawLine(x3, y3, x2, y2);
+	}	
 	
 	public static void drawPlayer(double player_X, double player_Y, double player_size){
 		
