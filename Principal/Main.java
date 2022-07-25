@@ -150,18 +150,18 @@ public static int findFreeIndex(int [] stateArray){
 		
 		/* variaveis dos inimigos tipo 2 */
 		
-		int [] enemy2_states = new int[10];					// estados
-		double [] enemy2_X = new double[10];					// coordenadas x
-		double [] enemy2_Y = new double[10];					// coordenadas y
-		double [] enemy2_V = new double[10];					// velocidades
-		double [] enemy2_angle = new double[10];				// Ã¢ngulos (indicam direÃ§Ã£o do movimento)
-		double [] enemy2_RV = new double[10];					// velocidades de rotaÃ§Ã£o
-		double [] enemy2_explosion_start = new double[10];			// instantes dos inÃ­cios das explosÃµes
-		double [] enemy2_explosion_end = new double[10];			// instantes dos finais das explosÃµes
-		double enemy2_spawnX = GameLib.WIDTH * 0.20;				// coordenada x do prÃ³ximo inimigo tipo 2 a aparecer
-		int enemy2_count = 0;							// contagem de inimigos tipo 2 (usada na "formaÃ§Ã£o de voo")
-		double enemy2_radius = 12.0;						// raio (tamanho aproximado do inimigo 2)
-		long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer
+		// int [] enemy2_states = new int[10];					// estados
+		// double [] enemy2_X = new double[10];					// coordenadas x
+		// double [] enemy2_Y = new double[10];					// coordenadas y
+		// double [] enemy2_V = new double[10];					// velocidades
+		// double [] enemy2_angle = new double[10];				// Ã¢ngulos (indicam direÃ§Ã£o do movimento)
+		// double [] enemy2_RV = new double[10];					// velocidades de rotaÃ§Ã£o
+		// double [] enemy2_explosion_start = new double[10];			// instantes dos inÃ­cios das explosÃµes
+		// double [] enemy2_explosion_end = new double[10];			// instantes dos finais das explosÃµes
+		// double enemy2_spawnX = GameLib.WIDTH * 0.20;				// coordenada x do prÃ³ximo inimigo tipo 2 a aparecer
+		// int enemy2_count = 0;							// contagem de inimigos tipo 2 (usada na "formaÃ§Ã£o de voo")
+		// double enemy2_radius = 12.0;						// raio (tamanho aproximado do inimigo 2)
+		// long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer
 		
 		/* Estrelas que formam o fundo de primeiro plano */
 		Background primaryBackground = new Background(0.070, 0.0, 20);
@@ -177,7 +177,6 @@ public static int findFreeIndex(int [] stateArray){
 			enemy1[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 9, currentTime + 2000*i);
 		}
-		for(int i = 0; i < enemy2_states.length; i++) enemy2_states[i] = INACTIVE;
 		for (int i = 0; i < enemy3.length; i++)
 		{
 			enemy3[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
@@ -324,9 +323,9 @@ public static int findFreeIndex(int [] stateArray){
 							enemy1[q].setState(EXPLODING);
 							enemy1[q].setExplosion_start(currentTime);
 							enemy1[q].setExplosion_end(currentTime + 500);
-							enemy2_states[i] = EXPLODING;
-							enemy2_explosion_start[i] = currentTime;
-							enemy2_explosion_end[i] = currentTime + 500;
+							enemy22.get(q).setState(EXPLODING);
+							enemy22.get(q).setExplosion_start(currentTime);
+							enemy22.get(q).setExplosion_end(currentTime + 500);
 							enemy3[q].setState(EXPLODING);
 							enemy3[q].setExplosion_start(currentTime);
 							enemy3[q].setExplosion_end(currentTime + 500);
@@ -714,7 +713,7 @@ public static int findFreeIndex(int [] stateArray){
 			
 			/* verificando se novos inimigos (tipo 2) devem ser "lancados" */
 			
-			if(currentTime > nextEnemy2){
+			if(currentTime > enemy22.get(0).getNextEnemy()){
 				
 				int free = findFreeIndexEnemy2(enemy22);
 								
