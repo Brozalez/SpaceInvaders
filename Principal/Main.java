@@ -25,7 +25,8 @@ public class Main {
 	public static final int ENEMY_NUMBER = 10;
 	public static long conta = 0;
 	public static long conta3 = 0;
-	public static long contapowerup = 0;
+	public static long contanuke = 0;
+	public static long contablaster = 0;
 	public static int id = 0;
 	
 	
@@ -118,14 +119,6 @@ public static int findFreeIndex(int [] stateArray){
 		
 		Player player = new Player(ACTIVE, GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, 0, 0, currentTime);
 
-
-		/* variaveis dos projeteis disparados pelo player */
-		int [] projectile_states = new int[10];					// estados
-		double [] projectile_X = new double[10];				// coordenadas x
-		double [] projectile_Y = new double[10];				// coordenadas y
-		double [] projectile_VX = new double[10];				// velocidades no eixo x
-		double [] projectile_VY = new double[10];				// velocidades no eixo y
-
 		/* variaveis dos inimigos tipo 1 */
 		ArrayList<Projectile> e_projectile = new ArrayList<Projectile>(E_PROJECTILE_NUMBER);
         ArrayList<Projectile> projectile = new ArrayList<Projectile>(PROJECTILE_NUMBER);
@@ -137,7 +130,9 @@ public static int findFreeIndex(int [] stateArray){
         
         Enemy[] enemy1 = new Enemy[ENEMY_NUMBER];
         Enemy[] enemy3 = new Enemy[ENEMY_NUMBER];
-        Enemy[] powerup = new Enemy[ENEMY_NUMBER];
+        Enemy[] nuke = new Enemy[ENEMY_NUMBER];
+        Enemy[] megablaster = new Enemy[ENEMY_NUMBER];
+
 
 		//Enemy[] enemy2 = new Enemy[ENEMY_NUMBER];
 		
@@ -155,41 +150,6 @@ public static int findFreeIndex(int [] stateArray){
 		int enemy2_count = 0;									// contagem de inimigos tipo 2 (usada na "formaÃ§Ã£o de voo")
 		double enemy2_radius = 12.0;							// raio (tamanho aproximado do inimigo 2)
 		long nextEnemy2 = currentTime + 7000;					// instante em que um novo inimigo 2 deve aparecer
-
-		/* variaveis dos inimigos tipo 3 */
-		
-
-		
-		// int [] enemy3_states = new int[10];						// estados
-		// double [] enemy3_X = new double[10];					// coordenadas x
-		// double [] enemy3_Y = new double[10];					// coordenadas y
-		// double [] enemy3_V = new double[10];					// velocidades
-		// double [] enemy3_angle = new double[10];				// Angulos (indicam direcao do movimento)
-		// double [] enemy3_RV = new double[10];					// velocidades de rotacao
-		// double [] enemy3_explosion_start = new double[10];		// instantes dos inicios das explosÃµes
-		// double [] enemy3_explosion_end = new double[10];		// instantes dos finais das explosÃµes
-		// long [] enemy3_nextShoot = new long[10];				// instantes do prÃ³ximo tiro
-		// long nextEnemy3 = currentTime + 1000;					// instante em que um novo inimigo 3 deve aparecer
-
-
-		/* variaveis do powerup */
-		
-		// int [] powerup = new int[10];					// estados
-		// double [] powerup_X = new double[10];					// coordenadas x
-		// double [] powerup_Y = new double[10];					// coordenadas y
-		// double [] powerup_V = new double[10];					// velocidades
-		// double [] powerup_angle = new double[10];				// Angulos (indicam direcao do movimento)
-		// double [] powerup_RV = new double[10];					// velocidades de rotacao
-		// long nextpowerup = currentTime + 20000;					// instante em que um novo inimigo 1 deve aparecer
-
-		/* variaveis dos projeteis lancados pelos inimigos (tanto tipo 1, quanto tipo 2) */
-		
-		int [] e_projectile_states = new int[200];				// estados
-		double [] e_projectile_X = new double[200];				// coordenadas x
-		double [] e_projectile_Y = new double[200];				// coordenadas y
-		double [] e_projectile_VX = new double[200];			// velocidade no eixo x
-		double [] e_projectile_VY = new double[200];			// velocidade no eixo y
-		double e_projectile_radius = 2.0;						// raio (tamanho dos projeteis inimigos)
 		
 		/* Estrelas que formam o fundo de primeiro plano */
 		Background primaryBackground = new Background(0.070, 0.0, 20);
@@ -211,11 +171,14 @@ public static int findFreeIndex(int [] stateArray){
 			enemy3[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 10, currentTime + 1000*i);
 		}
-		for (int i = 0; i < powerup.length; i++) {
-			powerup[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
+		for (int i = 0; i < nuke.length; i++) {
+			nuke[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 5, currentTime + 15000*i);
 		}
-
+		for (int i = 0; i < megablaster.length; i++) {
+			megablaster[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
+					0, currentTime + 500, 5, currentTime + 1000*i);
+		}
 
 		// Inicializando plano de fundo primário (próximo)
 		primaryBackground.startBackground();
@@ -333,31 +296,45 @@ public static int findFreeIndex(int [] stateArray){
 
 
 
-				/* colisoes player - powerup */
+				/* colisoes player - Powerups */
 
-				for(int i = 0; i < powerup.length; i++){
+				for(int i = 0; i < nuke.length; i++){
 					
-					double dx = powerup[i].getX() - player.getX();
-					double dy = powerup[i].getY() - player.getY();
+					double dx = nuke[i].getX() - player.getX();
+					double dy = nuke[i].getY() - player.getY();
 					double dist = Math.sqrt(dx * dx + dy * dy);
 					
-					if(dist < (player.getRadius() + powerup[i].getRadius()) * 0.8){
+					if(dist < (player.getRadius() + nuke[i].getRadius()) * 0.8){
 						player.setState(ACTIVE);
-						powerup[i].setState(INACTIVE);
-						// player.setState(ACTIVE);
+						nuke[i].setState(INACTIVE);
 						for (int q = 0; q < 10; q = q + 1){
 							enemy1[q].setState(EXPLODING);
 							enemy1[q].setExplosion_start(currentTime);
 							enemy1[q].setExplosion_end(currentTime + 500);
-							enemy2[q].setState(EXPLODING);
-							enemy2[q].setExplosion_start(currentTime);
-							enemy2[q].setExplosion_end(currentTime + 500);
+							enemy2_states[i] = EXPLODING;
+							enemy2_explosion_start[i] = currentTime;
+							enemy2_explosion_end[i] = currentTime + 500;
 							enemy3[q].setState(EXPLODING);
 							enemy3[q].setExplosion_start(currentTime);
 							enemy3[q].setExplosion_end(currentTime + 500);
 						}
 					}
 				}
+
+				for(int i = 0; i < megablaster.length; i++){
+					
+					double dx = megablaster[i].getX() - player.getX();
+					double dy = megablaster[i].getY() - player.getY();
+					double dist = Math.sqrt(dx * dx + dy * dy);
+					
+					if(dist < (player.getRadius() + megablaster[i].getRadius()) * 0.8){
+						player.setState(ACTIVE);
+						megablaster[i].setState(INACTIVE);
+						for (int q = 0; q < 10; q = q + 1){
+						}
+					}
+				}
+
 				
 			}
 			
@@ -641,29 +618,54 @@ public static int findFreeIndex(int [] stateArray){
 				}
 			}
 
-			//Powerup
+			//nuke
 
-			for(int i = 0; i < powerup.length; i++){
+			for(int i = 0; i < nuke.length; i++){
 				
-				if(powerup[i].getState() == ACTIVE){
+				if(nuke[i].getState() == ACTIVE){
 					
 					/* verificando se inimigo saiu da tela */
-					if(powerup[i].getY() > GameLib.HEIGHT + 10) {
+					if(nuke[i].getY() > GameLib.HEIGHT + 10) {
 						
-						powerup[i].setState(INACTIVE);
-						powerup[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
-						powerup[i].setY(-10);
+						nuke[i].setState(INACTIVE);
+						nuke[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
+						nuke[i].setY(-10);
 
 					}
 					else {
 					
-						powerup[i].setX(powerup[i].getX() + powerup[i].getV() * Math.cos(powerup[i].getAngle()) * delta);//ok
-						powerup[i].setY(powerup[i].getY() + powerup[i].getV() * Math.sin(powerup[i].getAngle()) * delta * (-1.0));//ok
-						powerup[i].setAngle(powerup[i].getAngle()+ powerup[i].getRV() * delta); //ok
+						nuke[i].setX(nuke[i].getX() + nuke[i].getV() * Math.cos(nuke[i].getAngle()) * delta);//ok
+						nuke[i].setY(nuke[i].getY() + nuke[i].getV() * Math.sin(nuke[i].getAngle()) * delta * (-1.0));//ok
+						nuke[i].setAngle(nuke[i].getAngle()+ nuke[i].getRV() * delta); //ok
 						
 					}
 				}
 			}
+
+			//megablaster
+
+			for(int i = 0; i < megablaster.length; i++){
+				
+				if(megablaster[i].getState() == ACTIVE){
+					
+					/* verificando se inimigo saiu da tela */
+					if(megablaster[i].getY() > GameLib.HEIGHT + 10) {
+						
+						megablaster[i].setState(INACTIVE);
+						megablaster[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
+						megablaster[i].setY(-10);
+
+					}
+					else {
+					
+						megablaster[i].setX(megablaster[i].getX() + megablaster[i].getV() * Math.cos(megablaster[i].getAngle()) * delta);//ok
+						megablaster[i].setY(megablaster[i].getY() + megablaster[i].getV() * Math.sin(megablaster[i].getAngle()) * delta * (-1.0));//ok
+						megablaster[i].setAngle(megablaster[i].getAngle()+ megablaster[i].getRV() * delta); //ok
+						
+					}
+				}
+			}
+
 			
 			/* verificando se novos inimigos (tipo 1) devem ser "lancados" */
 			
@@ -724,16 +726,29 @@ public static int findFreeIndex(int [] stateArray){
 			}
 
 
-			/* verificando se novos Powerups devem ser "lancados" */
+			/* verificando se novas nukes devem ser "lancados" */
 			
-			contapowerup += delta;
+			contanuke += delta;
 			
-			if(contapowerup >= 15000) { //aqui define a velocidade de spawn
-				contapowerup = 0;
+			if(contanuke >= 15000) { //aqui define a velocidade de spawn
+				contanuke = 0;
 				id++;
 				if(id>9) id=0;
-				if(powerup[id].getState() != EXPLODING) {
-					powerup[id].setState(ACTIVE);
+				if(nuke[id].getState() != EXPLODING) {
+					nuke[id].setState(ACTIVE);
+				}
+			}
+
+			/* verificando se novas  devem ser "lancados" */
+			
+			contablaster += delta;
+			
+			if(contablaster >= 15000) { //aqui define a velocidade de spawn
+				contablaster = 0;
+				id++;
+				if(id>9) id=0;
+				if(megablaster[id].getState() != EXPLODING) {
+					megablaster[id].setState(ACTIVE);
 				}
 			}
 			
@@ -892,14 +907,25 @@ public static int findFreeIndex(int [] stateArray){
 			}
 
 
-			/* desenhando powerup */
+			/* desenhando nuke */
 			
-			for(int i = 0; i < powerup.length; i++){
+			for(int i = 0; i < nuke.length; i++){
 								
-				if(powerup[i].getState() == ACTIVE){
+				if(nuke[i].getState() == ACTIVE){
 			
 					GameLib.setColor(Color.PINK);
-					GameLib.drawCircle(powerup[i].getX(), powerup[i].getY(), powerup[i].getRadius());
+					GameLib.drawCircle(nuke[i].getX(), nuke[i].getY(), nuke[i].getRadius());
+				}
+            }
+
+			/* desenhando megablaster */
+			
+			for(int i = 0; i < megablaster.length; i++){
+								
+				if(megablaster[i].getState() == ACTIVE){
+			
+					GameLib.setColor(Color.WHITE);
+					GameLib.drawCircle(megablaster[i].getX(), megablaster[i].getY(), megablaster[i].getRadius());
 				}
             }
 			
