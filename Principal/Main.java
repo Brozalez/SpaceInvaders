@@ -131,7 +131,7 @@ public static int findFreeIndex(int [] stateArray){
         Enemy[] enemy1 = new Enemy[ENEMY_NUMBER];
         Enemy[] enemy3 = new Enemy[ENEMY_NUMBER];
         Enemy[] nuke = new Enemy[ENEMY_NUMBER];
-        Enemy[] megablaster = new Enemy[ENEMY_NUMBER];
+        Enemy[] ninicolina = new Enemy[ENEMY_NUMBER];
 
 
 		//Enemy[] enemy2 = new Enemy[ENEMY_NUMBER];
@@ -175,8 +175,8 @@ public static int findFreeIndex(int [] stateArray){
 			nuke[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 5, currentTime + 15000*i);
 		}
-		for (int i = 0; i < megablaster.length; i++) {
-			megablaster[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
+		for (int i = 0; i < ninicolina.length; i++) {
+			ninicolina[i] = new Enemy(INACTIVE, (Math.random() * (GameLib.WIDTH - 20.0) + 10.0), -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2,
 					0, currentTime + 500, 5, currentTime + 1000*i);
 		}
 
@@ -247,6 +247,7 @@ public static int findFreeIndex(int [] stateArray){
 						player.setState(EXPLODING);
 						player.setExplosionStart(currentTime);
 						player.setExplosionEnd(currentTime + 2000);
+						
 					}
 				}
 			
@@ -321,16 +322,19 @@ public static int findFreeIndex(int [] stateArray){
 					}
 				}
 
-				for(int i = 0; i < megablaster.length; i++){
+				for(int i = 0; i < ninicolina.length; i++){
 					
-					double dx = megablaster[i].getX() - player.getX();
-					double dy = megablaster[i].getY() - player.getY();
+					double dx = ninicolina[i].getX() - player.getX();
+					double dy = ninicolina[i].getY() - player.getY();
 					double dist = Math.sqrt(dx * dx + dy * dy);
 					
-					if(dist < (player.getRadius() + megablaster[i].getRadius()) * 0.8){
+					if(dist < (player.getRadius() + ninicolina[i].getRadius()) * 0.8){
 						player.setState(ACTIVE);
-						megablaster[i].setState(INACTIVE);
-						for (int q = 0; q < 10; q = q + 1){
+						ninicolina[i].setState(INACTIVE);
+						player.setRadius(6.0);
+
+						for (int q = 0; q < 10; q = q + 1) {
+							
 						}
 					}
 				}
@@ -385,7 +389,6 @@ public static int findFreeIndex(int [] stateArray){
 						double dist = Math.sqrt(dx * dx + dy * dy);
 						
 						if(dist < enemy3[i].getRadius()){
-							
 							
 							enemy3[i].setState(EXPLODING);//ok
 							enemy3[i].setExplosion_start(currentTime);
@@ -644,23 +647,23 @@ public static int findFreeIndex(int [] stateArray){
 
 			//megablaster
 
-			for(int i = 0; i < megablaster.length; i++){
+			for(int i = 0; i < ninicolina.length; i++){
 				
-				if(megablaster[i].getState() == ACTIVE){
+				if(ninicolina[i].getState() == ACTIVE){
 					
 					/* verificando se inimigo saiu da tela */
-					if(megablaster[i].getY() > GameLib.HEIGHT + 10) {
+					if(ninicolina[i].getY() > GameLib.HEIGHT + 10) {
 						
-						megablaster[i].setState(INACTIVE);
-						megablaster[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
-						megablaster[i].setY(-10);
+						ninicolina[i].setState(INACTIVE);
+						ninicolina[i].setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
+						ninicolina[i].setY(-10);
 
 					}
 					else {
 					
-						megablaster[i].setX(megablaster[i].getX() + megablaster[i].getV() * Math.cos(megablaster[i].getAngle()) * delta);//ok
-						megablaster[i].setY(megablaster[i].getY() + megablaster[i].getV() * Math.sin(megablaster[i].getAngle()) * delta * (-1.0));//ok
-						megablaster[i].setAngle(megablaster[i].getAngle()+ megablaster[i].getRV() * delta); //ok
+						ninicolina[i].setX(ninicolina[i].getX() + ninicolina[i].getV() * Math.cos(ninicolina[i].getAngle()) * delta);//ok
+						ninicolina[i].setY(ninicolina[i].getY() + ninicolina[i].getV() * Math.sin(ninicolina[i].getAngle()) * delta * (-1.0));//ok
+						ninicolina[i].setAngle(ninicolina[i].getAngle()+ ninicolina[i].getRV() * delta); //ok
 						
 					}
 				}
@@ -747,8 +750,8 @@ public static int findFreeIndex(int [] stateArray){
 				contablaster = 0;
 				id++;
 				if(id>9) id=0;
-				if(megablaster[id].getState() != EXPLODING) {
-					megablaster[id].setState(ACTIVE);
+				if(ninicolina[id].getState() != EXPLODING) {
+					ninicolina[id].setState(ACTIVE);
 				}
 			}
 			
@@ -823,6 +826,7 @@ public static int findFreeIndex(int [] stateArray){
 				
 				double alpha = (currentTime - player.getExpStart()) / (player.getExpEnd() - player.getExpStart());
 				GameLib.drawExplosion(player.getX(), player.getY(), alpha);
+				player.setRadius(12.0);
 			}
 			else{
 				
@@ -920,12 +924,12 @@ public static int findFreeIndex(int [] stateArray){
 
 			/* desenhando megablaster */
 			
-			for(int i = 0; i < megablaster.length; i++){
+			for(int i = 0; i < ninicolina.length; i++){
 								
-				if(megablaster[i].getState() == ACTIVE){
+				if(ninicolina[i].getState() == ACTIVE){
 			
 					GameLib.setColor(Color.WHITE);
-					GameLib.drawCircle(megablaster[i].getX(), megablaster[i].getY(), megablaster[i].getRadius());
+					GameLib.drawCircle(ninicolina[i].getX(), ninicolina[i].getY(), ninicolina[i].getRadius());
 				}
             }
 			
